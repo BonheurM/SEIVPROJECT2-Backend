@@ -36,5 +36,6 @@ build/
 coverage/
 .nyc_output/
 
-# Markdown files
+# Markdown files (except README.md)
 *.md
+!README.md
