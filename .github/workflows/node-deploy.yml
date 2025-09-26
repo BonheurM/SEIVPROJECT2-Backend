@@ -1,62 +1,40 @@
-name: AWS DEPLOY TO STAGING
-# turn off deploy to AWS
+name: Backend Deploy (Project 2 - Team 2)
 
 on:
   pull_request:
     types: [closed]
-    branches:
-      - dev
+    branches: [ dev ]
 
 jobs:
-  aws-deploy:
+  deploy:
     runs-on: ubuntu-latest
-    env:
-      DB_HOST: ${{ secrets.DB_HOST }}
-      DB_PW: ${{ secrets.DB_PW}}
-      DB_USER: ${{ secrets.DB_USER }}
-      DB_NAME: ${{ secrets.DB_NAME }}
-      PORT: ${{ secrets.PORT }}
-
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v3
         with:
           ref: dev
-      - uses: actions/setup-node@v5
-        with:
-          node-version: 24
-      - run: npm install
 
-      - run: |
-          touch .env
-          echo DB_HOST = "$DB_HOST" >> .env
-          echo DB_PW = "$DB_PW" >> .env
-          echo DB_USER = "$DB_USER" >> .env
-          echo DB_NAME = "$DB_NAME" >> .env
-          echo PORT = "$PORT" >> .env
-
-      - run: npm run bundle
-
-      - name: Deploy to Server
-        uses: easingthemes/ssh-deploy@main
+      # Sync the backend repo to your Team 2 backend dir
+      - name: Sync backend to server
+        uses: easingthemes/ssh-deploy@v2.1.1
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SERVER_SSH_KEY }}
-          ARGS: "-rltgoDzvO --delete"
-          SOURCE: "deploy/"
-          REMOTE_HOST: "tutorial.eaglesoftwareteam.com"
-          REMOTE_USER: ubuntu
-          TARGET: "nodeapps/tutorial-backend-simple"
-      - name: Execute SSH commmands on remote server
-        uses: JimCronqvist/action-ssh@master
-        env:
-          NAME: "Root"
+          ARGS: "-rltgoDzvO --delete --exclude '.git' --exclude 'node_modules'"
+          SOURCE: "/"
+          REMOTE_HOST: "project2.eaglesoftwareteam.com"
+          REMOTE_USER: "ubuntu"
+          TARGET: "nodeapps/2025/project2/t2"
+
+      # Install deps on server and restart the Team 2 service
+      - name: Install deps & restart service
+        uses: appleboy/ssh-action@v1.0.3
         with:
-          hosts: "ubuntu@tutorial.eaglesoftwareteam.com"
-          privateKey: ${{ secrets.SERVER_SSH_KEY }}
-          debug: false
-          command: |
-            cd nodeapps/tutorial-backend-simple
-            npm install
-            sudo systemctl stop tutorial-backend-simple
-            sudo cp tutorial-backend-simple.service /lib/systemd/system/tutorial-backend-simple.service
+          host: project2.eaglesoftwareteam.com
+          username: ubuntu
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          script: |
+            cd ~/nodeapps/2025/project2/t2
+            npm ci --omit=dev
             sudo systemctl daemon-reload
-            sudo systemctl start tutorial-backend-simple
+            sudo systemctl restart course-t2-backend.service
+            sudo systemctl status course-t2-backend.service --no-pager -l || true
+
