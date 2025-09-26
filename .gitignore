@@ -39,4 +39,4 @@ coverage/
 # Markdown files (except README.md and FIND_MYSQL_PORT.md)
 *.md
 !README.md
-!FIND_MYSQL_PORT.md
+!FIND_MYSQL_PORT.mdWebServer.pem
