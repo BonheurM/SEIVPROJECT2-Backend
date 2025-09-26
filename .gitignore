@@ -36,6 +36,7 @@ build/
 coverage/
 .nyc_output/
 
-# Markdown files (except README.md)
+# Markdown files (except README.md and FIND_MYSQL_PORT.md)
 *.md
 !README.md
+!FIND_MYSQL_PORT.md

@@ -41,7 +41,7 @@ npm install
     - DB_PW = '**your-local-database-password**' (leave empty for default)
     - DB_USER = '**your-local-database-username**' (usually "root")
     - DB_NAME = '**your-local-database-name**' (e.g., 'testdb')
-    - DB_PORT = '3306' (default MySQL) or '3307' (for XAMPP users)
+    - DB_PORT = '3306' (default MySQL) or '3307' (for XAMPP users) - [See FIND_MYSQL_PORT.md for help](FIND_MYSQL_PORT.md)
     - PORT = '8080' (backend server port)
 
 6. Compile and run the project locally.
