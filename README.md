@@ -35,11 +35,14 @@ npm install
     - The sequelize in this project will make all the tables for you.
 
 5. Add a local **.env** file a make sure that the **database** variables are correct.
-    - DB_HOST = 'localhost'
-    - DB_PW = '**your-local-database-password**'
+    - Copy the example environment file: `cp .env.example .env`
+    - Edit the .env file with your settings:
+    - DB_HOST = 'localhost' or '127.0.0.1'
+    - DB_PW = '**your-local-database-password**' (leave empty for default)
     - DB_USER = '**your-local-database-username**' (usually "root")
-    - DB_NAME = '**your-local-database-name**'
-    - PORT = '3101'
+    - DB_NAME = '**your-local-database-name**' (e.g., 'testdb')
+    - DB_PORT = '3306' (default MySQL) or '3307' (for XAMPP users)
+    - PORT = '8080' (backend server port)
 
 6. Compile and run the project locally.
 ```
@@ -49,11 +52,12 @@ npm run start
 7. Test your project.
 
 ```
-8. For deployment to AWS set up repository secrects for the values in the .env for the AWS configurtation.
+8. For deployment to AWS set up repository secrets for the values in the .env for the AWS configuration.
     - DB_HOST = 'localhost'
-    - DB_PW = '**your-local-database-password**'
-    - DB_USER = '**your-local-database-username**' 
-    - DB_NAME = '**your-local-database-name**'
-    - PORT = '**port for backend **'
-    - SERVER_SSH_KEY = '** SSH key from the PEM file for AWS EC2 instance **'
+    - DB_PW = '**your-database-password**'
+    - DB_USER = '**your-database-username**' 
+    - DB_NAME = '**your-database-name**'
+    - DB_PORT = '3306' (or your MySQL port)
+    - PORT = '**port for backend**'
+    - SERVER_SSH_KEY = '**SSH key from the PEM file for AWS EC2 instance**'
 
