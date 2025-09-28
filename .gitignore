@@ -36,7 +36,9 @@ build/
 coverage/
 .nyc_output/
 
-# Markdown files (except README.md and FIND_MYSQL_PORT.md)
+# Markdown files (except README.md, FIND_MYSQL_PORT.md, and TEAM2_DEPLOYMENT_INFO.md)
 *.md
 !README.md
-!FIND_MYSQL_PORT.mdWebServer.pem
+!FIND_MYSQL_PORT.md
+!TEAM2_DEPLOYMENT_INFO.md
+WebServer.pem
