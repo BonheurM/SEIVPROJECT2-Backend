@@ -5,9 +5,8 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "bundle": "mkdir deploy && cp -r app server.js package.json package-lock.json tutorial-backend-simple.service .env deploy"
+    "bundle": "mkdir -p deploy && cp -r app server.js package.json package-lock.json course-t2-backend.service .env deploy"
   },
-
   "keywords": [
     "node.js",
     "express",
@@ -17,6 +16,7 @@
   "license": "ISC",
   "dependencies": {
     "cors": "^2.8.5",
+    "csv-parser": "^3.2.0",
     "dotenv": "^17.2.2",
     "express": "^4.17.3",
     "mysql2": "^2.3.3",
