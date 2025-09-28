@@ -7,19 +7,48 @@ on:
 
 jobs:
   deploy:
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
+    env:
+      DB_HOST: ${{ secrets.DB_HOST }}
+      DB_PW: ${{ secrets.DB_PW }}
+      DB_USER: ${{ secrets.DB_USER }}
+      DB_NAME: ${{ secrets.DB_NAME }}
+      DB_PORT: ${{ secrets.DB_PORT }}
+      PORT: ${{ secrets.PORT }}
+
     steps:
       - uses: actions/checkout@v3
         with:
           ref: dev
 
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - run: npm install
+
+      # Create .env file with production variables
+      - name: Create .env file
+        run: |
+          touch .env
+          echo "DB_HOST=${{ secrets.DB_HOST }}" >> .env
+          echo "DB_PW=${{ secrets.DB_PW }}" >> .env
+          echo "DB_USER=${{ secrets.DB_USER }}" >> .env
+          echo "DB_NAME=${{ secrets.DB_NAME }}" >> .env
+          echo "DB_PORT=${{ secrets.DB_PORT }}" >> .env
+          echo "PORT=3012" >> .env
+
+      # Bundle the application for deployment
+      - run: npm run bundle
+
       # Sync the backend repo to your Team 2 backend dir
-      - name: Sync backend to server
+      - name: Deploy to Server
         uses: easingthemes/ssh-deploy@v2.1.1
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SERVER_SSH_KEY }}
-          ARGS: "-rltgoDzvO --delete --exclude '.git' --exclude 'node_modules'"
-          SOURCE: "/"
+          ARGS: "-rltgoDzvO --delete"
+          SOURCE: "deploy/"
           REMOTE_HOST: "project2.eaglesoftwareteam.com"
           REMOTE_USER: "ubuntu"
           TARGET: "nodeapps/2025/project2/t2"
@@ -34,6 +63,7 @@ jobs:
           script: |
             cd ~/nodeapps/2025/project2/t2
             npm ci --omit=dev
+            sudo cp course-t2-backend.service /lib/systemd/system/course-t2-backend.service
             sudo systemctl daemon-reload
             sudo systemctl restart course-t2-backend.service
             sudo systemctl status course-t2-backend.service --no-pager -l || true

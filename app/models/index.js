@@ -1,4 +1,6 @@
-const dbConfig = require("../config/db.config.js");
+const dbConfig = process.env.NODE_ENV === 'production' 
+  ? require("../config/prod.db.config.js")
+  : require("../config/db.config.js");
 const Sequelize = require("sequelize");
 const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
   host: dbConfig.HOST,
@@ -17,6 +19,7 @@ db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 db.tutorials = require("./tutorial.model.js")(sequelize, Sequelize);
 db.lessons = require("./lesson.model.js")(sequelize, Sequelize);
+db.courses = require("./course.model.js")(sequelize, Sequelize);
 
 db.tutorials.hasMany(db.lessons, {
   as: 'lesson'
