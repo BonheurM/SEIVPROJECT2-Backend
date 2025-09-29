@@ -32,12 +32,14 @@ jobs:
       - name: Create .env file
         run: |
           touch .env
-          echo "DB_HOST=${{ secrets.DB_HOST }}" >> .env
-          echo "DB_PW=${{ secrets.DB_PW }}" >> .env
-          echo "DB_USER=${{ secrets.DB_USER }}" >> .env
-          echo "DB_NAME=${{ secrets.DB_NAME }}" >> .env
-          echo "DB_PORT=${{ secrets.DB_PORT }}" >> .env
-          echo "PORT=3012" >> .env
+          echo DB_HOST = "$DB_HOST" >> .env
+          echo DB_PW = "$DB_PW" >> .env
+          echo DB_USER = "$DB_USER" >> .env
+          echo DB_NAME = "$DB_NAME" >> .env
+          echo DB_PORT = "$DB_PORT" >> .env
+          echo PORT = "3012" >> .env
+          echo BASE_PATH = "/course-t2" >> .env
+          echo NODE_ENV = "production" >> .env
 
       # Bundle the application for deployment
       - run: npm run bundle
@@ -57,17 +59,18 @@ jobs:
           TARGET: "nodeapps/2025/project2/t2"
 
       # Install deps on server and restart the Team 2 service
-      - name: Install deps & restart service
-        uses: appleboy/ssh-action@v1.0.3
+      - name: Execute SSH commands on remote server
+        uses: JimCronqvist/action-ssh@master
         with:
-          host: project2.eaglesoftwareteam.com
-          username: ubuntu
-          key: ${{ secrets.SERVER_SSH_KEY }}
-          script: |
-            cd ~/nodeapps/2025/project2/t2
-            npm ci --omit=dev
+          hosts: "ubuntu@project2.eaglesoftwareteam.com"
+          privateKey: ${{ secrets.SERVER_SSH_KEY }}
+          debug: false
+          command: |
+            cd nodeapps/2025/project2/t2
+            npm install
+            sudo systemctl stop course-t2-backend.service || true
             sudo cp course-t2-backend.service /lib/systemd/system/course-t2-backend.service
             sudo systemctl daemon-reload
-            sudo systemctl restart course-t2-backend.service
+            sudo systemctl start course-t2-backend.service
             sudo systemctl status course-t2-backend.service --no-pager -l || true
 
