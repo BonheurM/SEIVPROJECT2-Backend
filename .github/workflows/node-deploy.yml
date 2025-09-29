@@ -41,6 +41,9 @@ jobs:
 
       # Bundle the application for deployment
       - run: npm run bundle
+      
+      # Copy .env to deploy directory
+      - run: cp .env deploy/
 
       # Sync the backend repo to your Team 2 backend dir
       - name: Deploy to Server
