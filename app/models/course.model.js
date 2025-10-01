@@ -7,27 +7,36 @@ module.exports = (sequelize, Sequelize) => {
     },
     dept: {
       type: Sequelize.STRING,
-      allowNull: false
+      allowNull: false,
+      field: 'Dept'
     },
     courseNumber: {
       type: Sequelize.STRING,
-      allowNull: false
+      allowNull: false,
+      field: 'Course Number'
     },
     level: {
       type: Sequelize.INTEGER,
-      allowNull: false
+      allowNull: false,
+      field: 'Level'
     },
     hours: {
       type: Sequelize.INTEGER,
-      allowNull: false
+      allowNull: false,
+      field: 'Hours'
     },
     name: {
       type: Sequelize.STRING,
-      allowNull: false
+      allowNull: false,
+      field: 'Name'
     },
     description: {
-      type: Sequelize.TEXT
+      type: Sequelize.TEXT,
+      field: 'Description'
     }
+  }, {
+    tableName: 'courses',
+    timestamps: false
   });
 
   return Course;
